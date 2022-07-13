@@ -30,13 +30,13 @@ limine:
 
 .PHONY: kernel
 kernel:
-	$(MAKE) -C src
-	cp src/neon -r build/neon
+	$(MAKE) -C source
+	cp source/neon -r build/neon
 
 apidae.iso: limine kernel
 	rm -rf iso_root
 	mkdir -p iso_root
-	cp src/neon \
+	cp source/neon \
 		limine.cfg limine/limine.sys limine/limine-cd.bin limine/limine-cd-efi.bin iso_root/
 	xorriso -as mkisofs -b limine-cd.bin \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
@@ -59,7 +59,7 @@ apidae.hdd: limine kernel
 	mkdir -p img_mount
 	sudo mount `cat loopback_dev`p1 img_mount
 	sudo mkdir -p img_mount/EFI/BOOT
-	sudo cp -v src/neon limine.cfg limine/limine.sys img_mount/
+	sudo cp -v source/neon limine.cfg limine/limine.sys img_mount/
 	sudo cp -v limine/BOOTX64.EFI img_mount/EFI/BOOT/
 	sync
 	sudo umount img_mount
