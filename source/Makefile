@@ -8,7 +8,7 @@ CXXFLAGS ?= -O2 -g -Wall -Wextra -pipe
 LDFLAGS ?=
 
 override INTERNALCXXFLAGS :=   \
-	-I.                      \
+	-IIncludes/                \
     -target x86_64-pc-none-elf \
     -fno-pic                 \
 	-fno-rtti	           	 \

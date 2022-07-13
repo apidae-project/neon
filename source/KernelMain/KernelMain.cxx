@@ -1,4 +1,4 @@
-#include <KernelMain/LimineRequests.hpp>
+#include <KernelMain/LimineRequests.hxx>
 
 extern "C" void EarlyInit() {
     if (LimineTerminalRequest.response = NULL || LimineTerminalRequest.response->terminal_count < 1) {
@@ -8,5 +8,9 @@ extern "C" void EarlyInit() {
 
 void main() {
     EarlyInit();
-    LimineTerminalRequest.response->write(terminal, "Hello, World!", 13);
+    struct limine_terminal *terminal = TerminalRequest.response->terminals[0];
+    LimineTerminalRequest.response->Print(terminal, "Hello, World!", 13);
+    for (;;) {
+        asm("hlt");
+    }
 }
