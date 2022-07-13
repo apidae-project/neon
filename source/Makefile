@@ -1,6 +1,7 @@
 OVERRIDE KERNEL := neon
 
 CXX = clang++
+CC = clang
 LD = ld.lld
 
 CXXFLAGS ?= -O2 -g -Wall -Wextra -pipe
@@ -59,7 +60,7 @@ $(KERNEL): $(OBJ)
 
 -include $(HEADER_DEPS)
 %.o: %.cpp
-	clang++ $(CXXFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INTERNALCFLAGS) -c $< -o $@
 
 %_S.o: %.S
 	$(CC) $(INTERNALASFLAGS) -c $< -o $@
