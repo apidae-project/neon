@@ -1,0 +1,25 @@
+name: Build and test (ubuntu)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install dependencies
+      run: sudo apt-get install lld
+    - name: build kernel
+      run: make -j$(nproc --all)
+      
+  clean:
+  
+    runs-on: ubuntu-latest
+    steps:
+      - run: make clean
