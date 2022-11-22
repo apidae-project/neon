@@ -1,16 +1,16 @@
 .PHONY: all
-all: apidae.iso
+all: apdiae.iso
 
 .PHONY: all-hdd
 all-hdd: apidae.hdd
 
 .PHONY: run
-run: apidae.iso
-	qemu-system-x86_64 -M q35 -m 2G -cdrom apidae.iso -boot d -debugcon stdio
+run: apdiae.iso
+	qemu-system-x86_64 -M q35 -m 2G -cdrom apdiae.iso -boot d -debugcon stdio
 
 .PHONY: run-uefi
-run-uefi: ovmf-x64 apidae.iso
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-x64/OVMF.fd -cdrom apidae.iso -boot d -debugcon stdio
+run-uefi: ovmf-x64 apdiae.iso
+	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-x64/OVMF.fd -cdrom apdiae.iso -boot d -debugcon stdio
 
 .PHONY: run-hdd
 run-hdd: apidae.hdd
@@ -30,26 +30,26 @@ limine:
 
 .PHONY: kernel
 kernel:
-	$(MAKE) -C source
-	cp source/neon -r build/neon
+	$(MAKE) -C sources
+	cp sources/neon -r binaries/neon
 
-apidae.iso: limine kernel
+apdiae.iso: limine kernel
 	rm -rf iso_root
 	mkdir -p iso_root
-	cp source/neon \
+	cp sources/neon \
 		limine.cfg limine/limine.sys limine/limine-cd.bin limine/limine-cd-efi.bin iso_root/
 	xorriso -as mkisofs -b limine-cd.bin \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
 		--efi-boot limine-cd-efi.bin \
 		-efi-boot-part --efi-boot-image --protective-msdos-label \
-		iso_root -o apidae.iso
-	limine/limine-deploy apidae.iso
+		iso_root -o apdiae.iso
+	limine/limine-deploy apdiae.iso
 	rm -rf iso_root
-	cp apidae.iso -r build/apidae.iso
+	cp apdiae.iso -r binaries/apdiae.iso
 
 apidae.hdd: limine kernel
 	rm -f apidae.hdd
-	dd if=/dev/zero bs=1M count=0 seek=64 of=apidae.hdd
+	dd if=/dev/zero bs=1M count=0 seek=64 of=apdiae.hdd
 	parted -s apidae.hdd mklabel gpt
 	parted -s apidae.hdd mkpart ESP fat32 2048s 100%
 	parted -s apidae.hdd set 1 esp on
@@ -59,7 +59,7 @@ apidae.hdd: limine kernel
 	mkdir -p img_mount
 	sudo mount `cat loopback_dev`p1 img_mount
 	sudo mkdir -p img_mount/EFI/BOOT
-	sudo cp -v source/neon limine.cfg limine/limine.sys img_mount/
+	sudo cp -v sources/neon limine.cfg limine/limine.sys img_mount/
 	sudo cp -v limine/BOOTX64.EFI img_mount/EFI/BOOT/
 	sync
 	sudo umount img_mount
@@ -68,10 +68,10 @@ apidae.hdd: limine kernel
 
 .PHONY: clean
 clean:
-	rm -rf iso_root apidae.iso apidae.hdd
-	$(MAKE) -C source clean
+	rm -rf iso_root apdiae.iso apidae.hdd
+	$(MAKE) -C sources clean
 
 .PHONY: distclean
 distclean: clean
 	rm -rf limine ovmf-x64
-	$(MAKE) -C source distclean
+	$(MAKE) -C sources distclean
