@@ -3,7 +3,7 @@
 namespace Neon {
     int pow(int Base, int Exponent) {
         int result = 1;
-        for(Exponent; Exponent > 0; Exponent--) {
+        for(;Exponent > 0; Exponent--) {
             result = result * Base;
         }
         return result;

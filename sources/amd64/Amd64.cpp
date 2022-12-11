@@ -1,4 +1,4 @@
-#include <amd64/amd64.h>
+#include <amd64/Amd64.h>
 #include <Common/Log.h>
 
 namespace Neon {
@@ -108,6 +108,40 @@ namespace Neon {
 
         void EnablePAT(){
             wrmsr(0x277, WriteBack | (Uncachable << 8) | (WriteCombining << 16));
+        }
+
+        void outb(uint16_t Port, uint8_t Value) {
+            asm volatile("outb %0, %1" : : "a"(Value), "Nd"(Port));
+        }
+
+        void outw(uint16_t Port, uint16_t Value) {
+            asm volatile("outw %w0, %w1" : : "a" (Value), "Nd" (Port));
+        }
+
+        void outl(uint16_t Port, uint32_t Value) {
+            asm volatile("outl %0, %w1" : : "a" (Value), "Nd" (Port));
+        }
+
+        uint8_t inb(uint16_t Port) {
+            uint8_t Data;
+            asm volatile("inb %w1, %b0" : "=a" (Data) : "Nd" (Port));
+            return Data;
+        }
+
+        uint16_t inw(uint16_t Port) {
+            uint16_t Data;
+            asm volatile("inw %w1, %w0" : "=a" (Data) : "Nd" (Port));
+            return Data;
+        }
+
+        uint32_t inl(uint16_t Port) {
+            uint32_t Data;
+            asm volatile("inl %w1, %0" : "=a" (Data) : "Nd" (Port));
+            return Data;
+        }
+
+        void Wait(void) {
+                asm volatile("outb %%al, $0x80" : : "a"(0));
         }
 
         void EnableCPUFeatures() {

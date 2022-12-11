@@ -22,22 +22,22 @@ namespace Neon {
             Uncached = 0x07
         };
 
-        struct [[gnu::packed]] registers_t {
+        typedef struct [[gnu::packed]]{
             uint64_t r15, r14, r13, r12, r11, r10, r9, r8;
-             uint64_t rbp, rdi, rsi, rdx, rcx, rbx, rax;
+            uint64_t rbp, rdi, rsi, rdx, rcx, rbx, rax;
             uint64_t int_no, error_code, rip, cs, rflags, rsp, ss;
-        };
+        } registers_t;
 
         uint64_t rdmsr(uint32_t msr);
         void wrmsr(uint32_t msr, uint64_t value);
 
-        void SetKernelGS(uint64_t addr);
+        void SetKernelGS(uint64_t Address);
         uint64_t GetKernelGS();
 
-        void SetGS(uint64_t addr);
+        void SetGS(uint64_t Address);
         uint64_t GetGS();
 
-        void SetFS(uint64_t addr);
+        void SetFS(uint64_t Address);
         uint64_t GetFS();
 
         void WriteCR(uint64_t reg, uint64_t val);
@@ -51,13 +51,20 @@ namespace Neon {
         void fxsave(uint8_t *region);
         void fxrstor(uint8_t *region);
 
-        void invlpg(uint64_t addr);
+        void invlpg(uint64_t Address);
 
         void EnableSSE();
         void EnableSMEP();
         void EnableSMAP();
         void EnableUMIP();
         void EnablePAT();
+        void outb(uint16_t Port, uint8_t Value);
+        void outw(uint16_t Port, uint16_t Value);
+        void outl(uint16_t Port, uint32_t Value);
+        uint8_t inb(uint16_t Port);
+        uint16_t inw(uint16_t Port);
+        uint32_t inl(uint16_t Port);
+        void Wait(void);
         void EnableCPUFeatures();
 
         #define ReadGS(offset) \

@@ -4,7 +4,7 @@
 namespace Neon {
     [[noreturn]] void panic(const char* Message) {
         Error("======= PANIC =======\n");
-        Error("%d", Message);
+        Error(Message);
         Error("CPU has been halted.");
         Error("Goodbye, world.");
         asm("cli\n hlt");

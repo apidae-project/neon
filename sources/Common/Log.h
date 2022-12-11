@@ -14,9 +14,9 @@ namespace Neon {
     #define CLEAR "\e[1;1H\e[2J"
 
     void e9_putc(char c);
-    void e9_print(const char *msg);
-    void e9_puts(const char *msg);
-    void Log(const char *format, ...);
+    void e9_print(const char *Message);
+    void e9_puts(const char *Message);
+    void Log(const char *Format, ...);
     void Error(const char *Message);
     void Warn(const char *Message);
 }

@@ -38,7 +38,7 @@ override INTERNALCFLAGS :=   \
 	-mno-red-zone
 
 override INTERNALLDFLAGS :=    \
-	-Tlinker.ld            \
+	-Tlinker.ld         \
 	-nostdlib              \
 	-zmax-page-size=0x1000 \
 	-static
