@@ -1,6 +1,6 @@
 #include <amd64/Amd64.h>
 #include <Common/Log.h>
-#include <Common/string.h>
+#include <Common/String.h>
 
 namespace Neon {
     namespace Amd64 {
