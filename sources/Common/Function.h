@@ -7,8 +7,6 @@ namespace Neon {
     template<typename retval, typename ...Args>
     class Function<retval(Args...)> {
         public:
-            Function() { };
-
             template<typename func>
             Function(func t) : callable_(new callableFunc<func>(t)) { }
 
@@ -64,5 +62,5 @@ namespace Neon {
 
 namespace std {
     template<typename fun>
-    using Function = ::Function<fun>;
+    using Function = Neon::Function<fun>;
 }

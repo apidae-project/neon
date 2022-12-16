@@ -3,17 +3,18 @@
 namespace Neon {
     int pow(int Base, int Exponent) {
         int result = 1;
-        for(;Exponent > 0; Exponent--) {
+        while(Exponent > 0) {
             result = result * Base;
+            Exponent--;
         }
         return result;
     }
 
-    int abs(int num) {
-        return num < 0 ? -num : num;
+    int abs(int Number) {
+        return Number < 0 ? -Number : Number;
     }
 
-    int sign(int num) {
-        return (num > 0) ? 1 : ((num < 0) ? -1 : 0);
+    int sign(int Number) {
+        return (Number > 0) ? 1 : ((Number < 0) ? -1 : 0);
     }
 }

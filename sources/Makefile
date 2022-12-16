@@ -71,6 +71,7 @@ $(KERNEL): $(OBJ)
 
 -include $(HEADER_DEPS)
 %.o: %.cpp
+	@echo "Compiling $<"
 	clang++ $(CXXFLAGS) $(INTERNALCFLAGS) -c $< -o $@
 
 %_S.o: %.S

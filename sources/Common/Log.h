@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdarg.h>
-#include <stddef.h>
+#include <Cxxshim/cstdarg>
+#include <Cxxshim/cstddef>
 
 namespace Neon {
     #define ANSI_COLOR_RED     "\x1b[31m"
@@ -17,6 +17,6 @@ namespace Neon {
     void e9_print(const char *Message);
     void e9_puts(const char *Message);
     void Log(const char *Format, ...);
-    void Error(const char *Message);
-    void Warn(const char *Message);
+    void Error(const char *Message, ...);
+    void Warn(const char *Message, ...);
 }

@@ -46,12 +46,12 @@ namespace Neon {
         int i;
         char buf[21] = {0};
 
-        if (!num) {
+        if(!num) {
             e9_putc('0');
             return;
         }
 
-        for (i = 19; num; i--) {
+        for(i = 19; ; i--) {
             buf[i] = (num % 10) + 0x30;
             num = num / 10;
         }
@@ -84,7 +84,13 @@ namespace Neon {
         va_end(argp);
     }
 
-    void Error(const char *Message) {
-        Log("[ERROR] %d", Message);
+    void Warn(const char *Message, ...) {
+        Log("\x1b[33m[WARN]\x1b[33m %s", Message);
+        Log("\x1b[0m");
+    }
+
+    void Error(const char *Message, ...) {
+        Log("\x1b[31m[ERROR]\x1b[31m %s", Message);
+        Log("\x1b[0m");
     }
 }

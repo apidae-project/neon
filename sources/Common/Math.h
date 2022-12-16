@@ -2,6 +2,6 @@
 
 namespace Neon {
     int pow(int Base, int Exponent);
-    int abs(int num);
-    int sign(int num);
+    int abs(int Number);
+    int sign(int Number);
 }
