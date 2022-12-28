@@ -1,7 +1,7 @@
-#include <Devices/PS2.h>
+#pragma once
 
 namespace Neon {
     namespace Devices {
-        
+        void Initialize(void);
     }
 }

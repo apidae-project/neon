@@ -46,3 +46,9 @@ volatile inline limine_kernel_address_request KernelAddressRequest {
     .revision = 0,
     .response = nullptr
 };
+
+volatile inline limine_module_request LimineServiceRequest {
+    .id = LIMINE_MODULE_REQUEST,
+    .revision = 0,
+    .response = nullptr
+};

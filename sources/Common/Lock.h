@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Cxxshim/atomic>
+#include <Cxx/atomic>
 
 class lock_t {
     private:

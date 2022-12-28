@@ -1,7 +1,7 @@
 #ifndef _CXXSHIM_ATOMIC
 #define _CXXSHIM_ATOMIC
 
-#include <Cxxshim/type_traits>
+#include <Cxx/type_traits>
 #include <stdint.h>
 
 #ifdef CXXSHIM_INTEGRATE_GCC

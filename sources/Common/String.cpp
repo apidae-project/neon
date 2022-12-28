@@ -1,6 +1,5 @@
-#include <Common/Math.h>
-#include <Cxxshim/cstdint>
-#include <Cxxshim/cstddef>
+#include <Cxx/cstdint>
+#include <Cxx/cstddef>
 
 namespace Neon {
     size_t strlen(const char* str) {
@@ -35,7 +34,7 @@ namespace Neon {
     }
 
     int strcmp(const char* a, const char* b) {
-        while (*a && *a == *b) { ++a; ++b; }
+        while (*a && *a == *b) { a++; b++; }
         return (int)(unsigned char)(*a) - (int)(unsigned char)(*b);
     }
 
@@ -51,7 +50,7 @@ namespace Neon {
     char* strchr(const char str[], char ch) {
         while (*str && *str != ch ) ++str;
         return (char *)(ch == *str ? str : NULL);  
-        }
+    }
 
     void memcpy(void* dest, void* src, size_t n) {
         int i;
@@ -74,71 +73,11 @@ namespace Neon {
         char *csrc = (char *)src;
         char *cdest = (char *)dest;
         char temp[n];
-        for (int i=0; i<n; i++) {
+        for (int i = 0; i < n; i++) {
             temp[i] = csrc[i];
         }
-        for (int i=0; i<n; i++) {
+        for (int i = 0; i < n; i++) {
             cdest[i] = temp[i];
         }
-    }
-
-    void reverse(char s[]) {
-        int c, i, j;
-        for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
-            c = s[i];
-            s[i] = s[j];
-            s[j] = c;
-        }
-    }
-
-    char* int_to_string(int num) {
-        bool isMinus = false;
-        static char out[10];
-        int g = 0;
-        if(num != 0) {
-            char temp[10];
-            int i = 0;
-            if (num < 0) {
-                isMinus = true;
-                num = -num;
-            }
-            if (num > 0); else { temp[i++] = '8'; num = -(num / 10); }
-                while(num > 0) {
-                temp[i++] = num % 10 + '0';
-                num /= 10;
-            }
-            if(isMinus) {
-                out[g] = '-';
-                g++;
-            }
-            while (--i >= 0) {
-                out[g] = temp[i];
-                g++;
-            }
-            return out;
-
-            } else {
-                return "0";
-            }
-    }
-
-    int string_to_int(char* str) {
-        int res = 0;
-        for (int i = 0; str[i] != '\0'; ++i) {
-            res = res * 10 + str[i] - '0';
-        }
-        return res;
-    }
-
-    long oct_to_dec(int oct) {
-        int dec = 0, temp = 0;
-
-        while(oct != 0) {
-            dec = dec + (oct % 10) * pow(8, temp);
-            temp++;
-            oct = oct / 10;
-        }
-
-        return dec;
     }
 }

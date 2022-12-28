@@ -1,13 +1,14 @@
 #pragma once
 
-#include <Cxxshim/cstddef>
-#include <Cxxshim/utility>
+#include <Cxx/cstddef>
+#include <Cxx/utility>
 #include <Common/Function.h>
 #include <amd64/MMIO.h>
 #include <amd64/Cpuid.h>
 
 namespace Neon {
     namespace Amd64 {
+        uintptr_t MMIOBase = 0;
         static constexpr uint64_t CPUID_INVARIANT_TSC = (1 << 8);
         static constexpr uint64_t CPUID_TSC_DEADLINE = (1 << 24);
         static constexpr uint64_t CPUID_SMEP = (1 << 7);
@@ -215,6 +216,17 @@ namespace Neon {
             };
 
             void Initialize(void);
+        }
+
+        namespace IOAPIC {
+            enum class DeliveryMode : uint8_t {
+                FIXED,
+                LOWPRIORITY,
+                SMI,
+                NMI,
+                INIT,
+                EXITININT
+            };
         }
     }
 }

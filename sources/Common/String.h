@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Cxxshim/cstdint>
-#include <Cxxshim/cstddef>
+#include <Cxx/cstdint>
+#include <Cxx/cstddef>
 
 namespace Neon {
     size_t strlen(const char* str);
@@ -13,7 +13,4 @@ namespace Neon {
     void memcpy(void* dest, void* src, size_t n);
     void memset(void* str, char ch, size_t n);
     void memmove(void* dest, void* src, size_t n);
-    char* int_to_string(int num);
-    int string_to_int(char* str);
-    long oct_to_dec(int n);
 }

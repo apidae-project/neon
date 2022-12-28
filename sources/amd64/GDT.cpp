@@ -1,7 +1,7 @@
 #include <amd64/Amd64.h>
 #include <Common/Log.h>
 #include <Common/Lock.h>
-#include <Cxxshim/new>
+#include <Cxx/new>
 
 namespace Neon {
     namespace Amd64 {
