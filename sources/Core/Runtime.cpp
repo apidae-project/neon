@@ -1,6 +1,6 @@
 #include <Core/Panic.h>
 #include <Core/Stubs.h>
-#include <Cxxshim/cstdint>
+#include <cstdint>
 
 using namespace Neon;
 
@@ -40,7 +40,7 @@ extern "C" {
     }
 
     void __cxa_pure_virtual() {
-        Panic("__cxa_pure_virtual() called!");
+        Panic("Pure virtual function called!");
     }
 
     namespace __cxxabiv1 {
@@ -64,10 +64,10 @@ extern "C" {
     [[noreturn]] void __stack_chk_fail() {
         Panic("Stack smashing detected!");
     }
-} // extern "C"
+}
 
 namespace std {
     [[gnu::noreturn]] void terminate() noexcept {
-        Panic("std::terminate() called");
+        Panic("std::terminate() called.");
     }
-} // namespace std
+}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Cxxshim/cstdint>
+#include <cstdint>
 
 static constexpr uint64_t ATEXIT_MAX_FUNCS = 128;
 
