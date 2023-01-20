@@ -9,17 +9,16 @@ define DEFAULT_VAR =
     endif
 endef
 
-$(eval $(call DEFAULT_VAR,CCX,cxx))
-
-$(eval $(call DEFAULT_VAR,LD,ld))
-
 CXXFLAGS ?= -O2 -g -Wall -Wextra -pipe
 
 LDFLAGS ?=
 
 override INTERNALCFLAGS :=   \
 	-I.                      \
-    -target x86_64-pc-none-elf \
+	-I../3rdparty/libc++	\
+	-I../3rdparty/limine-terminal-port \
+	-O3						\
+	-march=x86-64			\
     -fno-pic                 \
 	-fno-rtti	           	 \
     -mabi=sysv               \
@@ -67,15 +66,15 @@ override HEADER_DEPS := $(CFILES:.cpp=.d)
 all: $(KERNEL)
 
 $(KERNEL): $(OBJ)
-	ld.lld $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
+	ld $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
 
 -include $(HEADER_DEPS)
 %.o: %.cpp
 	@echo "Compiling $<"
-	clang++ $(CXXFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+	g++ $(CXXFLAGS) $(INTERNALCFLAGS) -c $< -o $@
 
 %_S.o: %.S
-	$(CC) $(INTERNALASFLAGS) -c $< -o $@
+	gcc $(INTERNALASFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:

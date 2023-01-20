@@ -1,10 +1,11 @@
 #pragma once
 
-#include <Cxxshim/cstddef>
-#include <Cxxshim/utility>
+#include <Common/Lock.h>
+#include <cstddef>
+#include <cstdint>
+#include <utility>
 #include <Common/Function.h>
-#include <amd64/MMIO.h>
-#include <amd64/Cpuid.h>
+#include <Amd64/Cpuid.h>
 
 namespace Neon {
     namespace Amd64 {
@@ -70,23 +71,23 @@ namespace Neon {
         void Wait(void);
         void EnableCPUFeatures();
 
-        #define ReadGS(offset) \
+        #define ReadGS(Offset) \
         ({ \
-            uint64_t value; \
-            asm volatile("movq %%gs:[" #offset "], %0" : "=r"(value) :: "memory"); \
-            value; \
+            uint64_t Value; \
+            asm volatile("movq %%gs:[" #Offset "], %0" : "=r"(Value) :: "memory"); \
+            Value; \
         })
 
-        #define ReadCR(num) \
+        #define ReadCR(Register) \
         ({ \
-            uint64_t value; \
-            asm volatile("movq %%cr" #num ", %0" : "=r" (value) :: "memory"); \
-            value; \
+            uint64_t Value; \
+            asm volatile("movq %%cr" #Register ", %0" : "=r" (Value) :: "memory"); \
+            Value; \
         })
 
-        #define WriteCR(num, value) \
+        #define WriteCR(Register, Value) \
         { \
-            asm volatile("movq %0, %%cr" #num :: "r" (value) : "memory"); \
+            asm volatile("movq %0, %%cr" #Register :: "r" (Value) : "memory"); \
         }
 
         namespace GDT {
@@ -198,7 +199,10 @@ namespace Neon {
             };
 
             class InterruptHandler {
-                    std::Function<void(registers_t*)> Handler;
+                    bool Reserved = false;
+                    /*bool IsReserved() { return this->Reserved == true; }
+                    bool Reserve() { if(this->IsReserved) return false; return this->Reserved = true; }*/
+                    Function<void(registers_t*)> Handler;
                 public:
                     template<typename Function, typename ...Args>
                     bool Set(Function &&func, Args ...args) {
@@ -211,10 +215,136 @@ namespace Neon {
 
                     bool Clear();
                     bool Get();
-                    bool operator()(registers_t *regs);
+                    bool operator()(registers_t *Registers);
             };
 
-            void Initialize(void);
+            void Initialize();
+        }
+
+        namespace IOAPIC {
+            enum class DeliveryMode : uint8_t {
+                FIXED = 0b000,
+                LOW_PRIORITY = 0b001,
+                SMI = 0b010,
+                NMI = 0b100,
+                INIT = 0b101,
+                EXT_INT = 0b111
+            };
+
+            enum class DestinationMode : uint8_t {
+                PHYSICAL = 0,
+                LOGICAL = 1
+            };
+
+            enum Flags {
+                MASKED = (1 << 0),
+                ACTIVE_HIGH_LOW = (1 << 1),
+                EDGE_LEVEL = (1 << 3),
+            };
+
+            class IOAPIC {
+            public:
+                bool Initialized;
+                uint32_t Read(uint32_t Register);
+                uint32_t Write(uint32_t Register, uint32_t Value);
+                uint32_t ReadEntry(uint32_t Entry);
+                void WriteEntry(uint32_t Entry, uint64_t Value);
+                void Mask(uint8_t InterruptRequest);
+                void Unmask(uint8_t InterruptRequest);
+                void Set(uint8_t i, uint8_t Vector, DeliveryMode Delivery, DestinationMode Destination, uint16_t Flags, uint8_t id);
+                IOAPIC();
+            private:
+                constexpr uint32_t Entry(uint32_t i) {
+                    return 0x10 + (i * 2);
+                }
+                uintptr_t MMIOBase = 0;
+            };
+
+            void Initialize();
+        }
+
+        template<std::unsigned_integral Type>
+        static inline Type mmin(auto Address) {
+            volatile auto Pointer = reinterpret_cast<volatile Type*>(Address);
+            return *Pointer;
+        }
+
+        template<std::unsigned_integral Type>
+        static inline void mmout(auto Address, Type Value) {
+            volatile auto Pointer = reinterpret_cast<volatile Type*>(Address);
+            *Pointer = Value;
+        }
+
+        namespace VirtualMemoryManager {
+            enum Flags {
+                Present = (1 << 0),
+                Write = (1 << 1),
+                UserSuper = (1 << 2),
+                WriteThrough = (1 << 3),
+                CacheDisable = (1 << 4),
+                Accessed = (1 << 4),
+                LargerPages = (1 << 5),
+                PAT = (1 << 7),
+                Custom0 = (1 << 9),
+                Custom1 = (1 << 10),
+                Custom2 = (1 << 11),
+                NoExec = (1UL << 63)
+            };
+
+            struct PDEntry {
+                uint64_t Value = 0;
+
+                void SetFlags(uint64_t Flags, bool Enabled) {
+                    uint64_t BitSel = Flags;
+                    this->Value &= ~BitSel;
+                    if (Enabled) this->Value |= BitSel;
+                }
+
+                bool GetFlags(uint64_t flags) {
+                    return (this->Value & flags) ? true : false;
+                }
+
+                uint64_t GetAddress() {
+                    return (this->Value & 0x000FFFFFFFFFF000) >> 12;
+                }
+
+                void SetAddress(uint64_t Address) {
+                    Address &= 0x000000FFFFFFFFFF;
+                    this->Value &= 0xFFF0000000000FFF;
+                    this->Value |= (Address << 12);
+                }
+            };
+
+            struct [[gnu::aligned(0x1000)]] PageTable {
+                PDEntry Entries[512];
+            };
+
+            struct Pagemap {
+                PageTable *TopLevel = nullptr;
+                lock_t Lock;
+                uint64_t LargePageSize = 0x200000;
+                uint64_t PageSize = 0x1000;
+
+                PDEntry *VirtualToPageTableEntry(uint64_t VirtualAddress, bool Allocate = true, bool HugePages = false);
+
+                bool Map(uint64_t VirtualAddress, uint64_t PhysicalAddress, uint64_t Flags = (Flags::Present | Flags::Write), bool HugePages = false);
+
+                bool Remap(uint64_t OldVirtualAddress, uint64_t NewVirtualAddress, uint64_t Flags = (Flags::Present | Flags::Write), bool HugePages = false);
+
+                bool Unmap(uint64_t VirtualAddress, bool HugePages = false);
+
+                uint64_t VirtualToPhysical(uint64_t VirtualAddress, bool HugePages = false) {
+                    PDEntry *PMLEntry = this->VirtualToPageTableEntry(VirtualAddress, false, HugePages);
+                    if (PMLEntry == nullptr || !PMLEntry->GetFlags(Present)) return 0;
+                    return PMLEntry->GetAddress() << 12;
+                }
+
+                void SwitchTo();
+                void Save();
+                Pagemap(bool User = false);
+            };
+            static PageTable *GetNextLevel(PageTable *CurrentLevel, size_t Entry, bool Allocate = false);
+            void Initialize();
         }
     }
 }

@@ -1,12 +1,12 @@
 #include <Common/Log.h>
 
 namespace Neon {
-    void (*limine_print)(const char *buf, size_t size) = NULL;
+    void (*limine_print)(const char *buf, size_t size) = nullptr;
 
     static const char CONVERSION_TABLE[] = "0123456789abcdef";
 
     void e9_putc(char c) {
-        if (limine_print != NULL) limine_print(&c, 1);
+        if (limine_print != nullptr) limine_print(&c, 1);
         __asm__ __volatile__ ("outb %0, %1" :: "a" (c), "Nd" (0xe9) : "memory");
     }
 
@@ -16,8 +16,8 @@ namespace Neon {
         }
     }
 
-    void e9_puts(const char *msg) {
-        e9_print(msg);
+    void e9_puts(const char *Message) {
+        e9_print(Message);
         e9_putc('\n');
     }
 

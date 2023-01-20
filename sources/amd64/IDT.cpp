@@ -1,18 +1,17 @@
-#include <amd64/Amd64.h>
+#include <Amd64/Amd64.h>
 #include <Common/Log.h>
 #include <Common/String.h>
 
 namespace Neon {
     namespace Amd64 {
         namespace IDT {
-            static IDTGate idt[256];
+            static IDTGate Idt[256];
             static IDTDescriptor IdtDescriptor;
             IDTPointer idtr;
 
             bool InterruptHandler::Clear() {
-                bool ret = (this->Handler == true);
                 this->Handler.clear();
-                return ret;
+                return this->Handler == true;
             }
 
             bool InterruptHandler::Get() {
@@ -25,13 +24,13 @@ namespace Neon {
                 return true;
             }
 
-            void Initialize(void) {
-                Log("starting IDT...");
+            void Initialize() {
+                Log("[IDT] Initializing");
                 idtr.Limit = sizeof(IDTEntry) * 256 - 1;
-                idtr.Base = reinterpret_cast<uintptr_t>(&idt[0]);
-                memset(idt, 0, sizeof(idt));
-                IdtDescriptor = {sizeof(idt), (uint64_t)&idt};
-                Log("Done!");
+                idtr.Base = reinterpret_cast<uintptr_t>(&Idt[0]);
+                memset(Idt, 0, sizeof(Idt));
+                IdtDescriptor = {sizeof(Idt), (uint64_t)&Idt};
+                Log("[IDT] Done!");
             }
         }
     }

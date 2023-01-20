@@ -1,5 +1,5 @@
 #include <Core/Panic.h>
-#include <Core/Stubs.h>
+#include <Core/Runtime.h>
 #include <cstdint>
 
 using namespace Neon;
@@ -46,7 +46,7 @@ extern "C" {
     namespace __cxxabiv1 {
         int __cxa_guard_acquire(uint64_t *guard) {
             if ((*guard) & 0x0001) return 0;
-            if ((*guard) & 0x0100) Abort();
+            if ((*guard) & 0x0100) abort();
             *guard |= 0x0100;
             return 1;
         }
@@ -55,8 +55,8 @@ extern "C" {
             *guard |= 0x01;
         }
 
-        void __cxa_guard_Abort(uint64_t *guard) {
-            Panic("__cxa_guard_Abort() called!");
+        void __cxa_guard_abort(uint64_t *guard) {
+            Panic("__cxa_guard_abort() called!");
         }
     }
 

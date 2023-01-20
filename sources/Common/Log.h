@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Cxxshim/cstdarg>
-#include <Cxxshim/cstddef>
+#include <cstdarg>
+#include <cstddef>
 
 namespace Neon {
     #define ANSI_COLOR_RED     "\x1b[31m"

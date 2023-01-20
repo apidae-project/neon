@@ -4,3 +4,4 @@
 *.iso
 binaries/
 neon
+.idea/

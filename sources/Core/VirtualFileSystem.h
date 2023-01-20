@@ -1,8 +1,7 @@
-//
-// Created by Ali on 1/13/2023.
-//
+#pragma once
 
-#ifndef NEON_VIRTUALFILESYSTEM_H
-#define NEON_VIRTUALFILESYSTEM_H
+namespace Neon {
+    namespace VirtualFileSystem {
 
-#endif //NEON_VIRTUALFILESYSTEM_H
+    }
+}

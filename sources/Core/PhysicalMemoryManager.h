@@ -1,8 +1,15 @@
-//
-// Created by Ali on 1/13/2023.
-//
+#pragma once
 
-#ifndef NEON_PHYSICALMEMORYMANAGER_H
-#define NEON_PHYSICALMEMORYMANAGER_H
-
-#endif //NEON_PHYSICALMEMORYMANAGER_H
+namespace Neon {
+    namespace MemoryManagement {
+        namespace PhysicalMemoryManager {
+            template<typename Type = void*>
+            Type Allocate(size_t Count = 1) {
+                return reinterpret_cast<Type>(Allocate(Count));
+            }
+            void *Allocate(size_t Count);
+            void Free(void *Pointer, size_t Count);
+            void Initialize();
+        }
+    }
+}

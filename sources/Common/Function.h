@@ -59,8 +59,3 @@ namespace Neon {
         callable *callable_;
     };
 }
-
-namespace std {
-    template<typename fun>
-    using Function = Neon::Function<fun>;
-}

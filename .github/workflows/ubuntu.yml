@@ -13,9 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install dependencies
-      run: sudo apt-get install lld
-    - name: build kernel
+    - name: Build kernel.
       run: make -j$(nproc --all)
       
   clean:

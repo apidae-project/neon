@@ -1,4 +1,4 @@
-#include <amd64/Amd64.h>
+#include <Amd64/Amd64.h>
 #include <Common/Log.h>
 
 namespace Neon {
@@ -49,28 +49,28 @@ namespace Neon {
         static uint32_t rfbm_low = rfbm & 0xFFFFFFFF;
         static uint32_t rfbm_high = (rfbm >> 32) & 0xFFFFFFFF;
 
-        void xsaveopt(uint8_t *region) {
-            asm volatile("xsaveopt64 (%0)" :: "r"(region), "a"(rfbm_low), "d"(rfbm_high) : "memory");
+        void xsaveopt(const uint8_t *Region) {
+            asm volatile("xsaveopt64 (%0)" :: "r"(Region), "a"(rfbm_low), "d"(rfbm_high) : "memory");
         }
 
-        void xsave(uint8_t *region) {
-            asm volatile("xsaveq (%0)" :: "r"(region), "a"(rfbm_low), "d"(rfbm_high) : "memory");
+        void xsave(const uint8_t *Region) {
+            asm volatile("xsaveq (%0)" :: "r"(Region), "a"(rfbm_low), "d"(rfbm_high) : "memory");
         }
 
-        void xrstor(uint8_t *region) {
-            asm volatile("xrstorq (%0)" :: "r"(region), "a"(rfbm_low), "d"(rfbm_high) : "memory");
+        void xrstor(const uint8_t *Region) {
+            asm volatile("xrstorq (%0)" :: "r"(Region), "a"(rfbm_low), "d"(rfbm_high) : "memory");
         }
 
-        void fxsave(uint8_t *region) {
-            asm volatile("fxsaveq (%0)" :: "r"(region) : "memory");
+        void fxsave(const uint8_t *Region) {
+            asm volatile("fxsaveq (%0)" :: "r"(Region) : "memory");
         }
 
-        void fxrstor(uint8_t *region) {
-            asm volatile("fxrstorq (%0)" :: "r"(region) : "memory");
+        void fxrstor(const uint8_t *Region) {
+            asm volatile("fxrstorq (%0)" :: "r"(Region) : "memory");
         }
 
-        void invlpg(uint64_t Addressess) {
-            asm volatile("invlpg (%0)" :: "r"(Addressess));
+        void invlpg(uint64_t Address) {
+            asm volatile("invlpg (%0)" :: "r"(Address));
         }
 
         void EnableSSE() {
@@ -140,18 +140,18 @@ namespace Neon {
             return Data;
         }
 
-        void Wait(void) {
-                asm volatile("outb %%al, $0x80" : : "a"(0));
+        void Wait() {
+            asm volatile("outb %%al, $0x80" : : "a"(0));
         }
 
         void EnableCPUFeatures() {
-            Log("Enabling x64 specific CPU features...");
+            Log("[AMD64] Enabling architecture-specific options...");
             EnableSSE();
             EnableSMEP();
             EnableSMAP();
             EnableUMIP();
             EnablePAT();
-            Log("Done!");
+            Log("[AMD64] Done!");
         }
     }
 }

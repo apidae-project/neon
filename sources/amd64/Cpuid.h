@@ -249,7 +249,7 @@ __get_cpuid_max (unsigned int __ext, unsigned int *__sig)
   unsigned int __eax, __ebx, __ecx, __edx;
 
 #ifndef __x86_64__
-  /* See if we can use cpuid.  On AMD64 we always can.  */
+  /* See if we can use cpuid.  On Amd64 we always can.  */
 #if __GNUC__ >= 3
   __asm__ ("pushf{l|d}\n\t"
 	   "pushf{l|d}\n\t"

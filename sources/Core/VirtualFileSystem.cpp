@@ -1,5 +1,7 @@
-//
-// Created by Ali on 1/13/2023.
-//
+#include <Core/VirtualFileSystem.h>
 
-#include "VirtualFileSystem.h"
+namespace Neon {
+    namespace VirtualFileSystem {
+
+    }
+}
