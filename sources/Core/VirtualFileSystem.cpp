@@ -1,7 +1,7 @@
 #include <Core/VirtualFileSystem.h>
 
 namespace Neon {
-    namespace VirtualFileSystem {
+namespace VirtualFileSystem {
 
-    }
 }
+} // namespace Neon

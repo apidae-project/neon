@@ -1,26 +1,34 @@
-#include <Core/Panic.h>
 #include <Common/Log.h>
+#include <Core/Panic.h>
+#include <TypeInfo.h>
+#include <Utility.h>
 
 namespace Neon {
-    [[noreturn]] void Panic(const char *File, int Line, const char *Function, const char *Message) {
-        Error("======= Panic =======");
-        Error(Message);
-        Error("At file %s at line %d in function %s.", File, Line, Function);
-    }
-
-    [[noreturn]] void Panic(const char* Message) {
-        Error("======= Panic =======");
-        Error(Message);
-        Error("CPU has been halted.");
-        Error("Goodbye, world.");
-        asm("cli\n hlt");
-    }
-
-    extern "C" void AssertionFail(const char *Message, const char *File, int Line, const char *Function) {
-        Panic(File, Line, Function, Message);
-    }
-
-    extern "C" [[noreturn]] void abort() noexcept {
-        Panic("Abort() called.");
-    }
+template<class... Args> [[noreturn]] void Panic(const char *File,
+                        const int Line,
+                        const char *Function,
+                        const char *Message,
+                        const Args &...Arguments) {
+	Error("======= Panic =======");
+	Error("{}{}", Message, Cxxutil::Forward<Args...>(Arguments...));
+	Error("At file {} at line {} in function {}.", File, Line, Function);
+	Error("CPU has been halted.");
+	Error("Goodbye, world.");
+	while(true) asm("cli\n hlt");
 }
+
+template<class... Args> [[noreturn]] void Panic(const char *Message, const Args &...Arguments) {
+	Error("======= Panic =======");
+	Error("{}{}", Message, Cxxutil::Forward<Args...>(Arguments...));
+	Error("CPU has been halted.");
+	Error("Goodbye, world.");
+	while(true) asm("cli\n hlt");
+}
+
+extern "C" void AssertionFail(const char *Message,
+                              const char *File,
+                              const int Line,
+                              const char *Function) {
+	Panic(File, Line, Function, Message);
+}
+} // namespace Neon

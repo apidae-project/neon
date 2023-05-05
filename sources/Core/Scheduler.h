@@ -1,8 +1,16 @@
-//
-// Created by Ali on 2/3/2023.
-//
+#pragma once
 
-#ifndef NEON_SCHEDULER_H
-#define NEON_SCHEDULER_H
+#include <Core/Process.h>
 
-#endif //NEON_SCHEDULER_H
+namespace Neon {
+namespace Scheduler {
+void Initialize();
+void AddThread(Thread *Thread);
+void RemoveThread(Thread *Thread);
+void Yield();
+void Schedule();
+void SwitchThreads(Thread *NewThread);
+void ScheduleProcess(Process *Process);
+void UnscheduleProcess(Process *Process);
+} // namespace Scheduler
+} // namespace Neon

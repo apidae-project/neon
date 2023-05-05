@@ -5,3 +5,8 @@
 binaries/
 neon
 .idea/
+*.10x
+System Volume Information/
+$RECYCLE.BIN/
+*.d
+helium/

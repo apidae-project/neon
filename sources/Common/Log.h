@@ -1,22 +1,32 @@
 #pragma once
 
-#include <cstdarg>
-#include <cstddef>
+#include <cstdint>
+#include <Common/CString.h>
+#include <StringView.h>
+#include <Format.h>
+#include <String.h>
+#include <Vector.h>
+#include <Utility.h>
 
 namespace Neon {
-    #define ANSI_COLOR_RED     "\x1b[31m"
-    #define ANSI_COLOR_GREEN   "\x1b[32m"
-    #define ANSI_COLOR_ORANGE  "\x1b[33m"
-    #define ANSI_COLOR_BLUE    "\x1b[34m"
-    #define ANSI_COLOR_MAGENTA "\x1b[35m"
-    #define ANSI_COLOR_CYAN    "\x1b[36m"
-    #define ANSI_COLOR_RESET   "\x1b[0m"
-    #define CLEAR "\e[1;1H\e[2J"
+namespace Logger {
+void WriteLine(Cxxutil::StringView &Line) { for(auto Character: Line) Serial::PrintCharacter(Character); }
+void WriteLine(Cxxutil::String &Line) { for(auto Character : Line) Serial::PrintCharacter(Character); }
+void WriteLine(const char *Line) { for(int i = 0; i < Line; i++) Serial::PrintCharacter(Line[i]);  }
+}
 
-    void e9_putc(char c);
-    void e9_print(const char *Message);
-    void e9_puts(const char *Message);
-    void Log(const char *Format, ...);
-    void Error(const char *Message, ...);
-    void Warn(const char *Message, ...);
+template<typename... Args>
+inline void Log(const char *Format, const Args&... Arguments) {
+	Logger::WriteLine(Cxxutil::Format(Format, Cxxutil::Forward<Args>(Arguments)...));
+}
+
+template<typename... Args>
+inline void Warn(const char *Message, const Args&... Arguments) {
+    Log("[WARN] {}{}", Message, Cxxutil::Forward<Args>(Arguments)...);
+}
+
+template<typename... Args>
+inline void Error(const char *Message, const Args&... Arguments) {
+	Log("[ERROR] {}{}", Message, Cxxutil::Forward<Args>(Arguments)...);
+}
 }

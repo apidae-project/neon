@@ -15,8 +15,8 @@ LDFLAGS ?=
 
 override INTERNALCFLAGS :=   \
 	-I.                      \
-	-I../3rdparty/libc++	\
-	-I../3rdparty/limine-terminal-port \
+	-I../3rdparty/limine-terminal-port/source \
+	-I../Cxxutil/sources	\
 	-O3						\
 	-march=x86-64			\
     -fno-pic                 \
